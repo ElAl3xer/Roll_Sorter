@@ -14,7 +14,7 @@ jobs:
       - name: Install dependencies
         run: pip install moviepy librosa numpy scipy pyinstaller imageio imageio-ffmpeg
       - name: Build app
-        run: pyinstaller --onefile --windowed ClipsSorter.py
+        run: pyinstaller --onefile --windowed --hidden-import=imageio --hidden-import=imageio_ffmpeg ClipsSorter.py
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
