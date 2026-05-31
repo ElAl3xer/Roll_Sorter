@@ -1,0 +1,24 @@
+name: Build Windows App
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: pip install moviepy librosa numpy scipy pyinstaller
+      - name: Build app
+        run: pyinstaller --onefile --windowed ClipsSorter.py
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: RollSorter-windows
+          path: dist/
