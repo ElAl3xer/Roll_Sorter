@@ -1,4 +1,3 @@
-Requirements: 
 moviepy
 librosa
 numpy
