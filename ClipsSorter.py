@@ -6,31 +6,39 @@ import librosa
 import tempfile
 import shutil
 import threading
+import numpy as np
  
-UPPER_THRESHOLD = 0.6
-LOWER_THRESHOLD = 0.3
+UPPER_THRESHOLD = 0.25
+LOWER_THRESHOLD = 0.08
  #BS FUNCTIONS
 def audioanalyzer(file_path):
+    video = None
+    temp_path = None
+
     try:
         speech_frames = 0
-        temp_path = None
         video = VideoFileClip(file_path)
-        if video.audio == None:
+        if video.audio is None:
             return 0.0
         with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as temp_file:
             temp_path = temp_file.name
-            video.audio.write_audiofile(temp_file.name)
-            y, sr = librosa.load(temp_file.name)
-            rms = librosa.feature.rms(y=y)
-            for energy_level in rms[0]:
-                if energy_level > 0.02:
-                    speech_frames += 1
-            speech_ratio = speech_frames / len(rms[0])
+        video.audio.write_audiofile(
+            temp_path,
+            logger=None
+        )
+        y, sr = librosa.load(temp_path, sr=16000)
+        rms = librosa.feature.rms(y=y)[0]
+        rms_db = librosa.amplitude_to_db(rms, ref=1.0)
+        for db in rms_db:
+            if db > -25:
+                speech_frames += 1
+        speech_ratio = speech_frames / len(rms_db)
+        return speech_ratio
     finally:
-        if temp_path is not None:
+        if video is not None:
+            video.close()
+        if temp_path and os.path.exists(temp_path):
             os.remove(temp_path)
-        video.close()
-    return speech_ratio
  
 def classify(speech_ratio):
     if speech_ratio > UPPER_THRESHOLD:
