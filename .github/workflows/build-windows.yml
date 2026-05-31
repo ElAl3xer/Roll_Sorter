@@ -1,9 +1,7 @@
 name: Build Windows App
-
 on:
   push:
     branches: [main]
-
 jobs:
   build:
     runs-on: windows-latest
@@ -14,7 +12,7 @@ jobs:
         with:
           python-version: "3.11"
       - name: Install dependencies
-        run: pip install moviepy librosa numpy scipy pyinstaller
+        run: pip install moviepy librosa numpy scipy pyinstaller imageio imageio-ffmpeg
       - name: Build app
         run: pyinstaller --onefile --windowed ClipsSorter.py
       - name: Upload artifact
