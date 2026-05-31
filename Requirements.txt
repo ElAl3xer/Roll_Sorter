@@ -1,5 +1,6 @@
 Requirements: 
 moviepy
 librosa
-py2app
 numpy
+scipy
+py2app
