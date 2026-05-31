@@ -1,0 +1,5 @@
+Requirements: 
+moviepy
+librosa
+py2app
+numpy
